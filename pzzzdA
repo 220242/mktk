@@ -1,0 +1,17 @@
+
+
+/system scheduler
+
+add disabled=yes interval=1h name=Status on-event=status policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon start-date=may/10/2020 start-time=11:50:00
+
+add disabled=yes interval=1h name=Wlan on-event=wlan policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon start-date=may/10/2020 start-time=11:51:00
+
+add disabled=yes interval=1h name=Wan on-event=wan policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon start-date=may/10/2020 start-time=11:52:00
+
+add interval=1h name=Telegram on-event="/system script run status\r\
+
+    \n/system script run wlan\r\
+
+    \n/system script run Dhcp" policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon start-date=may/10/2020 start-time=12:00:00
+
+add name=Boottime on-event="/system script run boot" policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon start-time=startup
