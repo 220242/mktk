@@ -1,0 +1,21 @@
+:global telegramToken "API-KEY";
+:global telegramUser "CHAT";
+:global wirelessMessage "";
+:local conns [/ip dhcp-server lease print count-only];
+:if ($conns = 0) do={ 
+:set wirelessMessage "<b>%F0%9F%93%B1D Connections%F0%9F%93%B6</b>%0A%0AConnected <i>$conns</i> Devices";
+} else={ 
+:local counts ($conns - 1); 
+:set wirelessMessage "<b>DHCP-Server lease</b>%0A%0AConnected <i>$conns</i> Devices%0A%0A";
+/ip dhcp-server lease print
+:for i from=0 to=$counts do={
+	:local deviceIf [/ip dhcp-server lease get number=$i host-name];
+	:local deviceMac [/ip dhcp-server lease  get number=$i mac-address];
+	:local deviceUptime [/ip dhcp-server lease  get number=$i last-seen];
+	:local deviceAddress [/ip dhcp-server lease  get number=$i address];
+:set $wirelessMessage "$wirelessMessage<b><i>$deviceIf</i></b> - <b><i>$deviceUptime</i></b>%0A <code>$deviceAddress</code> - <code>$deviceMac</code>%0A";
+};
+:set $wirelessMessage "$wirelessMessage";
+}
+:local tgUrl "https://api.telegram.org/bot$telegramToken/sendMessage?chat_id=$telegramUser&text=$wirelessMessage&parse_mode=html&disable_notification=true";
+/tool fetch url="$tgUrl" mode=http keep-result=no;
